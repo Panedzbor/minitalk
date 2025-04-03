@@ -34,8 +34,8 @@ int	main(void)
 	/*signal(SIGINT, sigint_handler);*/
 	signal(SIGUSR1, sigusr1_handler);
 	signal(SIGUSR2, sigusr2_handler);
-	while(true)
-		sleep(1);
+	while(true){}
+		//usleep(1);
 	return (0);
 }
 
@@ -52,7 +52,8 @@ void	sigusr1_handler(int sig)
 	else
 	{
 		decode_char(sig * 0);
-		kill(g_client_pid, SIGUSR2);
+		if (g_client_pid != 0)
+			kill(g_client_pid, SIGUSR2);
 	}
 }
 
@@ -60,11 +61,12 @@ void	sigusr2_handler(int sig)
 {
 	write(1, "s2\n", 3);
 	if (g_client_pid == 0)
-		decode_pid(sig * 0);
+		decode_pid(sig * 0 + 1);
 	else
 	{
 		decode_char(sig * 0 + 1);
-		kill(g_client_pid, SIGUSR2);
+		if (g_client_pid != 0)
+			kill(g_client_pid, SIGUSR2);
 	}
 }
 
@@ -73,12 +75,15 @@ void	decode_pid(int bit)
 	static pid_t	temp;
 	static int		pos;
 
-	temp += bit << pos;
+	temp += (bit << pos);
 	pos++;
 	if (pos == 23)
 	{
+		ft_printf("Received client pid: %d\n", temp);
 		g_client_pid = temp;
 		kill(g_client_pid, SIGUSR1);
+		temp = 0;
+		pos = 0;
 	}
 }
 
@@ -91,9 +96,9 @@ void	decode_char(int bit)
 	pos++;
 	if (pos == 8)
 	{
-		pos = 0;
-		ch = 0;
 		add_char(ch);
+		ch = 0;
+		pos = 0;
 	}
 }
 
@@ -119,7 +124,7 @@ void	add_char(int ch)
 	temp = ft_strjoin(str, str2);
 	free((void *)str);
 	free((void *)str2);
-	str = temp;
+	str = temp;ft_printf("string: %s\n", str);
 	set_to_null((void **)&temp, (void **)&str2);
 	if (ch == '\0')
 		/*process_str(&str);*/
@@ -144,7 +149,7 @@ void	add_first_char(char **str, int ch)
 	*str = (char *)ft_calloc(sizeof(char), 2);
 	if (!(*str))
 		exit(-1);
-	(*str)[0] = ch;
+	(*str)[0] = ch;ft_printf("first char: %c\n", ch);
 }
 
 /*void	process_client_pid(char **str)
@@ -157,9 +162,10 @@ void	add_first_char(char **str, int ch)
 
 void	print_str(char **str)
 {
-	ft_printf("%s\n", *str);
+	ft_printf("output: %s\n", *str);
 	free((void *)*str);
 	*str = NULL;
+	g_client_pid = 0;
 }
 
 void	set_to_null(void **ptr1, void **ptr2)

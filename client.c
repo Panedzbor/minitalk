@@ -30,7 +30,7 @@ int	main(int argc, char *argv[])
 	signal(SIGUSR1, sigusr1_handler);
 	signal(SIGUSR2, sigusr2_handler);
 	check_input(argc, argv);
-	pid = getpid();
+	pid = getpid();ft_printf("Client PID: %d\n", pid);
 	server_pid = ft_atoi(argv[1]);
 	send_pid(pid, server_pid);
 	send_str(server_pid, argv[2]);
@@ -51,20 +51,20 @@ void	send_pid(pid_t pid, pid_t server_pid)
 			kill(server_pid, SIGUSR1);
 		else
 			kill(server_pid, SIGUSR2);
-		sleep(2);
+		usleep(1000);
 		pos++;
 	}
 }
 
 void	sigusr1_handler(int sig)
 {
-	write(1, "s1\n", 3);
+	//write(1, "s1\n", 3);
 	g_signal_received = sig * 0 + 1;
 }
 
 void	sigusr2_handler(int sig)
 {
-	write(1, "s2\n", 3);
+	//write(1, "s2\n", 3);
 	g_signal_received = sig * 0 + 1;
 }
 
