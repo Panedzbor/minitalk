@@ -12,6 +12,7 @@
 
 # target
 NAME = server
+CLIENT = client
 
 # complier and flags
 CC = cc
@@ -20,28 +21,33 @@ LFLAGS = -Llibft
 LLIBS = -lft
 
 # files
-SOURCES = server.c
-OBJECTS = $(SOURCES:.c=.o)
+SERVER_SRC = server.c
+SERVER_OBJ = $(SERVER_SRC:.c=.o)
+CLIENT_SRC = client.c
+CLIENT_OBJ = $(CLIENT_SRC:.c=.o)
 
 # rules
-all: $(NAME)
+all: $(NAME) $(CLIENT)
 
 libft:
 	$(MAKE) -C ./libft
 
-$(NAME): libft $(OBJECTS)
-	$(CC) $(CFLAGS) $(SOURCES:.c=.o) $(LFLAGS) $(LLIBS) -o $(NAME)
+$(NAME): libft $(SERVER_OBJ)
+	$(CC) $(CFLAGS) $(SERVER_OBJ) $(LFLAGS) $(LLIBS) -o $(NAME)
+
+$(CLIENT): libft $(CLIENT_OBJ)
+	$(CC) $(CFLAGS) $(CLIENT_OBJ) $(LFLAGS) $(LLIBS) -o $(CLIENT)
 
 %.o: %.c minitalk.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	$(MAKE) clean -C ./libft
-	rm -f $(OBJECTS)
+	rm -f $(SERVER_OBJ) $(CLIENT_OBJ)
 
 fclean: clean
 	$(MAKE) fclean -C ./libft
-	rm -f $(NAME)
+	rm -f $(NAME) $(CLIENT)
 
 re: fclean all
 
