@@ -1,18 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minitalk.h                                         :+:      :+:    :+:   */
+/*   client_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: earutiun <earutiun@student.42berlin.d      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/01 13:56:31 by earutiun          #+#    #+#             */
-/*   Updated: 2025/04/01 13:56:37 by earutiun         ###   ########.fr       */
+/*   Created: 2025/04/04 15:41:31 by earutiun          #+#    #+#             */
+/*   Updated: 2025/04/04 15:41:33 by earutiun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/libft.h"
-#include <sys/types.h>
-#include <signal.h>
+#include "minitalk.h"
 
-void	add_char(int ch, pid_t *client_pid);
-void	check_input(int argc, char *argv[]);
+void	check_input(int argc, char *argv[])
+{
+	int	i;
+
+	if (argc != 3)
+	{
+		ft_printf("Invalid number of arguments. Must be two!\n");
+		exit(-1);
+	}
+	i = 0;
+	while (argv[1][i] != '\0')
+	{
+		if (!ft_isdigit(argv[1][i]))
+		{
+			ft_printf("The first argument must be server PID.\n");
+			exit(-1);
+		}
+		i++;
+	}
+}

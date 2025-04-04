@@ -14,12 +14,10 @@
 
 bool	g_signal_received;
 
-void	send_pid(pid_t pid, pid_t server_pid);
-void	sigusr1_handler(int sig);
-void	sigusr2_handler(int sig);
-void	send_str(pid_t server_pid, char *string);
-int		send_bit(int i, int pos, pid_t server_pid, char *string);
-void	check_input(int argc, char *argv[]);
+static void	sigusr2_handler(int sig);
+static void	send_pid(pid_t pid, pid_t server_pid);
+static void	send_str(pid_t server_pid, char *string);
+static int	send_bit(int i, int pos, pid_t server_pid, char *string);
 
 int	main(int argc, char *argv[])
 {
@@ -27,17 +25,21 @@ int	main(int argc, char *argv[])
 	pid_t	server_pid;
 
 	g_signal_received = false;
-	signal(SIGUSR1, sigusr1_handler);
 	signal(SIGUSR2, sigusr2_handler);
 	check_input(argc, argv);
-	pid = getpid();ft_printf("Client PID: %d\n", pid);
+	pid = getpid();
 	server_pid = ft_atoi(argv[1]);
 	send_pid(pid, server_pid);
 	send_str(server_pid, argv[2]);
 	return (0);
 }
 
-void	send_pid(pid_t pid, pid_t server_pid)
+static void	sigusr2_handler(int sig)
+{
+	g_signal_received = sig * 0 + 1;
+}
+
+static void	send_pid(pid_t pid, pid_t server_pid)
 {
 	int	pos;
 	int	bit;
@@ -56,19 +58,7 @@ void	send_pid(pid_t pid, pid_t server_pid)
 	}
 }
 
-void	sigusr1_handler(int sig)
-{
-	//write(1, "s1\n", 3);
-	g_signal_received = sig * 0 + 1;
-}
-
-void	sigusr2_handler(int sig)
-{
-	//write(1, "s2\n", 3);
-	g_signal_received = sig * 0 + 1;
-}
-
-void	send_str(pid_t server_pid, char *string)
+static void	send_str(pid_t server_pid, char *string)
 {
 	int	len;
 	int	i;
@@ -92,7 +82,7 @@ void	send_str(pid_t server_pid, char *string)
 	}
 }
 
-int	send_bit(int i, int pos, pid_t server_pid, char *string)
+static int	send_bit(int i, int pos, pid_t server_pid, char *string)
 {
 	int	bit;
 
@@ -108,25 +98,4 @@ int	send_bit(int i, int pos, pid_t server_pid, char *string)
 		return (1);
 	}
 	return (0);
-}
-
-void	check_input(int argc, char *argv[])
-{
-	int	i;
-
-	if (argc != 3)
-	{
-		ft_printf("Invalid number of arguments. Must be two!\n");
-		exit(-1);
-	}
-	i = 0;
-	while (argv[1][i] != '\0')
-	{
-		if (!ft_isdigit(argv[1][i]))
-		{
-			ft_printf("The first argument must be server PID.\n");
-			exit(-1);
-		}
-		i++;
-	}
 }

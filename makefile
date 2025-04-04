@@ -21,9 +21,9 @@ LFLAGS = -Llibft
 LLIBS = -lft
 
 # files
-SERVER_SRC = server.c
+SERVER_SRC = server.c serv_utils.c
 SERVER_OBJ = $(SERVER_SRC:.c=.o)
-CLIENT_SRC = client.c
+CLIENT_SRC = client.c client_utils.c
 CLIENT_OBJ = $(CLIENT_SRC:.c=.o)
 
 # rules
