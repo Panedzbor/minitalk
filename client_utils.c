@@ -48,7 +48,7 @@ void	send_pid(pid_t pid, pid_t server_pid)
 			kill(server_pid, SIGUSR1);
 		else
 			kill(server_pid, SIGUSR2);
-		usleep(1000);
+		usleep(2000);
 		pos++;
 	}
 }
