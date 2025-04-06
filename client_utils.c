@@ -18,7 +18,7 @@ void	check_input(int argc, char *argv[])
 
 	if (argc != 3)
 	{
-		ft_printf("Invalid number of arguments. Must be two!\n");
+		ft_printf("Invalid number of arguments. Must be two: ./client <serv_pid> <string>\n");
 		exit(-1);
 	}
 	i = 0;
@@ -30,5 +30,25 @@ void	check_input(int argc, char *argv[])
 			exit(-1);
 		}
 		i++;
+	}
+}
+
+void	send_pid(pid_t pid, pid_t server_pid)
+{
+	int	pos;
+	int	bit;
+
+	ft_printf("Sending PID to the server...\n");
+	pos = 0;
+	bit = 0;
+	while (pos < 23)
+	{
+		bit = (pid >> pos) & 1;
+		if (bit == 0)
+			kill(server_pid, SIGUSR1);
+		else
+			kill(server_pid, SIGUSR2);
+		usleep(1000);
+		pos++;
 	}
 }

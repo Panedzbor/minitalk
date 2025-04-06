@@ -16,3 +16,4 @@
 
 void	add_char(int ch, pid_t *client_pid);
 void	check_input(int argc, char *argv[]);
+void	send_pid(pid_t pid, pid_t server_pid);

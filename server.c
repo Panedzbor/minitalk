@@ -35,25 +35,37 @@ int	main(void)
 
 static void	sigusr1_handler(int sig)
 {
+	pid_t	client_pid_copy;
+
+	(void)sig;
 	if (g_client_pid == 0)
-		decode_pid(sig * 0);
+		decode_pid(0);
 	else
 	{
-		decode_char(sig * 0);
+		client_pid_copy = g_client_pid;
+		decode_char(0);
 		if (g_client_pid != 0)
 			kill(g_client_pid, SIGUSR2);
+		else
+			kill(client_pid_copy, SIGUSR1);
 	}
 }
 
 static void	sigusr2_handler(int sig)
 {
+	pid_t	client_pid_copy;
+	
+	(void)sig;
 	if (g_client_pid == 0)
-		decode_pid(sig * 0 + 1);
+		decode_pid(1);
 	else
 	{
-		decode_char(sig * 0 + 1);
+		client_pid_copy = g_client_pid;
+		decode_char(1);
 		if (g_client_pid != 0)
 			kill(g_client_pid, SIGUSR2);
+		else
+			kill(client_pid_copy, SIGUSR1);
 	}
 }
 
@@ -67,7 +79,7 @@ static void	decode_pid(int bit)
 	if (pos == 23)
 	{
 		g_client_pid = temp;
-		kill(g_client_pid, SIGUSR2);
+		kill(g_client_pid, SIGUSR1);
 		temp = 0;
 		pos = 0;
 	}

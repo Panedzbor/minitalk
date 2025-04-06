@@ -12,7 +12,7 @@
 
 #include "minitalk.h"
 
-static void	add_first_char(char **str, int ch);
+static void	add_first_char(char **str, int ch, pid_t *client_pid);
 static void	print_str(char **str, pid_t *client_pid);
 static void	set_to_null(void **ptr1, void **ptr2);
 
@@ -26,7 +26,7 @@ void	add_char(int ch, pid_t *client_pid)
 	str2 = NULL;
 	if (!str)
 	{
-		add_first_char(&str, ch);
+		add_first_char(&str, ch, client_pid);
 		return ;
 	}
 	str2 = (char *)ft_calloc(sizeof(char), 2);
@@ -45,12 +45,14 @@ void	add_char(int ch, pid_t *client_pid)
 		print_str(&str, client_pid);
 }
 
-static void	add_first_char(char **str, int ch)
+static void	add_first_char(char **str, int ch, pid_t *client_pid)
 {
 	*str = (char *)ft_calloc(sizeof(char), 2);
 	if (!(*str))
 		exit(-1);
 	(*str)[0] = ch;
+	if (ch == '\0')
+		print_str(str, client_pid);
 }
 
 static void	print_str(char **str, pid_t *client_pid)
